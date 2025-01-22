@@ -20492,14 +20492,18 @@ function makeAccessibleTooltip(elemID, args, mode="click") {
 			elem.addEventListener("keydown", function (event) {keyTooltip(event, ...args)});
 			elem.setAttribute("tabindex", 0);
 
-			// Shift-Enter(aka shift-click)
-			let callback = elem.onclick;
-			elem.onclick = function() {
-				if(shiftPressed) {
-					keyTooltip({key: "?"}, ...args)
-					return;
+			// Shift-Enter(aka shift-click) 
+			// Because of NVDA strangeness, this only works on true <button>s, so limit it to those, not just role=button 
+			// Because of Javascript scope issues, the wrapper breaks `this` scope. So, future self, if you find yourself tearing your hair out because you have a button with a tooltip that uses `this` in the onclick callback, this is why. Good luck to you.
+			if (elem.tagName === "BUTTON") {
+				let callback = elem.onclick;
+				elem.onclick = function() {
+					if(shiftPressed) {
+						keyTooltip({key: "?"}, ...args)
+						return;
+					}
+					if (callback) { callback() }
 				}
-				if (callback) { callback() }
 			}
 		}
 

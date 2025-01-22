@@ -1850,10 +1850,9 @@ function getExtraScryerText(fromForm){
 	return tooltipText;
 }
 
-function swapNiceCheckbox(elem, forceSetting, code){
+function swapNiceCheckbox(elem, forceSetting){
 	//Send just the elem to swap the current state
 	//Send elem and either true or false as forceSetting to force the checkbox to checked/unchecked
-	if (code && code !== "Space") { return; } // Keyboard support, only check/uncheck on spacebar
 	var checked;
 	if (typeof forceSetting === 'undefined') checked = !readNiceCheckbox(elem);
 	else checked = (forceSetting == true);
@@ -1884,8 +1883,7 @@ function buildNiceCheckbox(id, extraClass, enabled, extraFunction, label){
 	var classes = `icomoon niceCheckbox noselect ${(extraClass) ? extraClass : ""} icon-checkbox-${(enabled) ? "checked" : "unchecked"}`
 	extraFunction = (extraFunction) ? " " + extraFunction + ";" : "";
 	var html = `<span role='checkbox' tabindex=0 id='${id}' class='${classes}' data-checked='${enabled}' aria-checked='${enabled}' aria-label='${label}' 
-		onclick='swapNiceCheckbox(this); ${extraFunction}' 
-		onKeyDown='swapNiceCheckbox(this, undefined, event.code); ${extraFunction}'>
+		onclick='swapNiceCheckbox(this); ${extraFunction};'>
 		</span>`;
 	return html;
 }
