@@ -294,7 +294,7 @@ function tooltip(what, isItIn, event, textString, attachFunction, numCheck, rena
 		tooltipText = "Click to view " + ((textString == 0) ? "today" : dayOfWeek(getDailyTimeString(textString, false, true))) + "s challenge, which resets in less than " + daysUntilReset + " day" + ((daysUntilReset == 1) ? "" : "s") + ".";
 		costText = "";
 	}
-	if (what == "Decay"){
+	if (what == "Decay" || what == "Melt"){
 		var challenge = game.challenges.Decay;
 		if (game.global.challengeActive == "Melt"){
 			challenge = game.challenges.Melt;
@@ -7384,16 +7384,16 @@ function updateDecayStacks(addStack){
 	}
 	var challenge = game.challenges[game.global.challengeActive];
 	if (addStack && challenge.stacks < challenge.maxStacks && game.upgrades.Battle.done > 0) challenge.stacks++;
-	if (elem == null){
-		var icon = (game.global.challengeActive == "Melt") ? "icomoon icon-fire" : "glyphicon glyphicon-cloud";
-		document.getElementById('debuffSpan').innerHTML += "<span id='decayStacks' onmouseout='tooltip(\"hide\")' class='badge antiBadge'><span id='decayStackCount'></span> <span class='" + icon + "'></span></span>";
-		elem = document.getElementById('decayStacks');
-	}
 	if (game.global.challengeActive == "Melt"){
 		if (challenge.stacks > challenge.largestStacks) challenge.largestStacks = challenge.stacks;
 	}
-	elem.setAttribute('onmouseover', 'tooltip("Decay", null, event)');
-	document.getElementById('decayStackCount').innerHTML = challenge.stacks;
+
+	if (elem == null) {
+		var icon = (game.global.challengeActive == "Melt") ? "icon-fire" : "glyphicon-cloud";
+		document.getElementById('debuffSpan').insertAdjacentHTML("beforeend", 
+			makeIconEffectHTML(game.global.challengeActive, false, icon, "antiBadge", ['decayStacks','decayStackText']))
+	}
+	document.getElementById('decayStackText').innerHTML = challenge.stacks;
 }
 
 function swapClass(prefix, newClass, elem) {
