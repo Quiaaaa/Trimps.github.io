@@ -5815,6 +5815,7 @@ function drawJob(what) {
 			<button class="thingColorCanNotAfford thing noselect pointer jobThing" id="${what}" onclick="buyJob('${what}')">
 				<span class="thingName"><span id="${what}Alert" class="alert badge">${alertMessage}</span>${what}</span>, 
 				<span class="thingOwned" id="${what}Owned">0</span>
+				<span class="firingSR">, Firing</span>
 				<span class="cantAffordSR">, Not Affordable</span>
 				<span class="affordSR">, Can Buy</span>
 			</button>`;
@@ -6488,6 +6489,7 @@ function toggleSetting(setting, elem, fromPortal, updateOnly, backwards, fromHot
 		titleElem.innerHTML = achievement.names[displayNumber];
 		titleElem.className = 'achieveTier' + achievement.tiers[displayNumber];
 		document.getElementById("achievement" + location + "Description").innerHTML = achievement.description(displayNumber);
+		screenReaderAssert(`Completed Achievement! ${achievement.names[displayNumber]}. ${achievement.description(displayNumber)}`)
 		document.getElementById("achievement" + location + "Reward").innerHTML = '<b>Reward:</b> +' + game.tierValues[achievement.tiers[displayNumber]] + "% Damage";
 		if ((forHover || forTracker) && typeof achievement.progress !== 'undefined' && (typeof achievement.highest === 'undefined' || (achievement.highest > 0 || achievement.finished > 0))){
 			if (!one && achievement.tiers.length == achievement.finished){

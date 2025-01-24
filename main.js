@@ -3099,6 +3099,7 @@ var offlineProgress = {
 		if (this.effectiveElem.innerHTML !== newEffectiveHTML) {
 			this.effectiveElem.innerHTML = newEffectiveHTML;
 		}
+		screenReaderSummary();
 	},
 	leaveMap: function(){
 		this.zoneBtnsElem.style.display = 'none';
@@ -19915,7 +19916,7 @@ function gameLoop(makeUp, now) {
 		if (mutations.Living.active()){
 			mutations.Living.change();
 		}
-		if (usingScreenReader) screenReaderSummary();
+		if (usingScreenReader && !usingRealTimeOffline) screenReaderSummary();
 		if ((game.global.alchemyUnlocked && game.global.universe == 2) || game.global.challengeActive == "Alchemy") alchObj.autoCraft();
 		if (game.permaBoneBonuses.boosts.owned > 0) game.permaBoneBonuses.boosts.checkCharges();
 	}
