@@ -10489,11 +10489,14 @@ function findHomeForSpecial(special, item, array, max){
 				icon = icon.replace("*", "");
 				prefix =  "icomoon icon-"
 			}
-			else prefix = "glyphicon glyphicon-";
-			if (typeof special.title !== 'undefined')
-			array[level].text = '<span title="' + special.title + '" class="' + prefix + icon + ' ' + addClass + '"></span>';
-			else{
-			array[level].text = '<span class="' + prefix + icon + ' ' + addClass +  '"></span>';
+			else {
+				prefix = "glyphicon glyphicon-";
+			}
+			if (typeof special.title !== 'undefined') {
+				array[level].text = `<span aria-label='${special.title}' title="${special.title}"  class='${prefix + icon + ' ' + addClass}'></span>`;
+			}
+			else {
+				array[level].text = '<span class="' + prefix + icon + ' ' + addClass +  '"></span>';
 			}
 			array[level].special = item;
 		}
@@ -10586,7 +10589,7 @@ function drawGrid(maps) {
 			let backgroundColor = '';
 			let title = '';
 			let role = '';
-			const innerHTML = cell.text === '' ? '&nbsp;' : cell.text;
+			let innerHTML = cell.text === '' ? '&nbsp;' : cell.text;
 
 			if (maps) {
 				if (cell.name === 'Pumpkimp') className.push('mapPumpkimp');
@@ -10602,12 +10605,14 @@ function drawGrid(maps) {
 				if (cell.empowerment) {
 					className.push(`empoweredCell${cell.empowerment}`);
 					title = `Token of ${cell.empowerment}`;
+					innerHTML += `<span class="visually-hidden">${title}</span>`
 				} else if (checkIfSpireWorld() && game.global.spireActive) className.push('spireCell');
 				if (cell.special === 'easterEgg') {
 					game.global.eggLoc = counter;
 					className.push('eggCell');
 					title = 'Colored Egg';
 					role = 'button';
+					innerHTML += `<span class="visually-hidden">${title}</span>`
 				}
 			}
 
@@ -10615,13 +10620,14 @@ function drawGrid(maps) {
 						style="width:${width};padding-top:${paddingTop};padding-bottom:${paddingBottom};font-size:${fontSize};background:${background};background-color:${backgroundColor};" 
 						class="${className.join(' ')}" 
 						title="${title}" 
+						aria-label="${title}"
 						role="${role}">
 						${innerHTML}
 					</li>`;
 			counter++;
 		}
 
-		rowHTML = `<ul id="row${i}" class="battleRow">${html}</ul>` + rowHTML;
+		rowHTML = `<ul aria-label="${maps ? "Maps" : "World"} row ${i+1}" id="row${i}" class="battleRow">${html}</ul>` + rowHTML;
 	}
 
 	grid.className = className;
