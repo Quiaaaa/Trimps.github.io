@@ -6184,6 +6184,7 @@ function drawEquipment(what) {
 			<button class="noselect pointer thingColorCanNotAfford thing" id="${what}" onclick="buyEquipment('${what}')">
 				<span class="thingName">${what} <span id="${what}Numeral">${numeral}</span></span>, 
 				<span class="thingOwned">Level: <span id="${what}Owned">${equipment.level}</span></span>
+				<span class="efficientSR">, Most Efficient</span>
 				<span class="cantAffordSR">, Not Affordable</span>
 				<span class="affordSR">, Can Buy</span>
 			</button>`;

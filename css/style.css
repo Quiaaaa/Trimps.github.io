@@ -6206,6 +6206,10 @@ sup{
 	display: none;
 }
 
+:not(.efficientYes) > .efficientSR {
+	display:none;
+}
+
 .screenReaderAchievements{
 	font-size: 0.8vw;
 }
