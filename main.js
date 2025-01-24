@@ -2656,10 +2656,16 @@ function updatePerkColor(what){
 		perkClass = ((canSpend >= price)) ? "perkColorOn" : "perkColorOff";
 		if (usingScreenReader){
 			var affordElem = document.getElementById('screenReaderPerkAfford' + what);
-			
 			if (affordElem){
-				if (perkClass == "perkColorMaxed") affordElem.innerHTML = ", Max";
-				else affordElem.innerHTML = (perkClass === "perkColorOn") ? ", Can Buy" : ", Not Affordable";
+				if (perkClass == "perkColorMaxed")  {
+					affordElem.innerHTML = ", Max"; 
+				}
+				else {
+					let amt = ''
+					if (game.global.buyAmt == "Max") amt = prettify(getPerkBuyCount(what));
+					else if (game.global.buyAmt > 1) amt = prettify(game.global.buyAmt);
+					affordElem.innerHTML = (perkClass === "perkColorOn") ? `, Can Buy ${amt}` : ", Not Affordable";
+				}
 			}
 		}
 	}

@@ -5750,7 +5750,7 @@ function drawBuilding(what) {
 				<span id="${what}Alert" class="alert badge">${alertMessage}</span>${what}</span>, 
 				<span class="thingOwned" id="${what}Owned">${game.buildings[what].owned}</span>
 				<span class="cantAffordSR">, Not Affordable</span>
-				<span class="affordSR">, Can Buy</span>
+				<span class="affordSR">, Can Buy <span id="${what}BuyAmount"></span></span>
 			</button>`;
 	}
 
@@ -5817,7 +5817,7 @@ function drawJob(what) {
 				<span class="thingOwned" id="${what}Owned">0</span>
 				<span class="firingSR">, Firing</span>
 				<span class="cantAffordSR">, Not Affordable</span>
-				<span class="affordSR">, Can Buy</span>
+				<span class="affordSR">, Can Buy <span id="${what}BuyAmount"></span></span>
 			</button>`;
 	}
 	return `<div onmouseover="tooltip('${what}','jobs',event)" onmouseout="tooltip('hide')" class="thingColorCanNotAfford thing noselect pointer jobThing" id="${what}" onclick="buyJob('${what}')">
@@ -6024,6 +6024,17 @@ function drawUpgrade(what) {
 	return html;
 }
 
+function updateSRBuyAmt(what, item) {
+	if (usingScreenReader) {
+		let amtElem = document.getElementById(`${item}BuyAmount`);
+		if (amtElem) {
+			let amt = prettify((game.global.buyAmt == "Max") ? calculateMaxAfford(game[what][item], true) : game.global.buyAmt);
+			if (game[what][item].percent || what == "Antenna") amt = 1
+			if (amt != "1") amtElem.textContent = amt;
+		}
+	}
+}
+
 function checkButtons(what) {
 	var where = game[what];
 	if (what == "jobs") {
@@ -6031,7 +6042,10 @@ function checkButtons(what) {
 		for (var item in game.jobs){
 			if (game.jobs[item].locked == 1) continue;
 			if (workspaces <= 0 && !(game.jobs[item].allowAutoFire && game.options.menu.fireForJobs.enabled)) updateButtonColor(item, false, true);
-			else updateButtonColor(item,canAffordJob(item, false, workspaces, true),true);
+			else {
+				updateButtonColor(item,canAffordJob(item, false, workspaces, true),true);
+				updateSRBuyAmt(what, item);
+			}
 		}
 		return;
 	}
@@ -6056,6 +6070,8 @@ function checkButtons(what) {
 /* 			if (itemBuild == "Nursery" && mutations.Magma.active())
 				canAfford = false;
  */			updateButtonColor(itemBuild, canAfford);
+ 			updateSRBuyAmt(what, itemBuild)
+
 		}
 		return;
 	}
@@ -6064,6 +6080,7 @@ function checkButtons(what) {
 			var thisEquipment = game.equipment[itemEquip];
 			if (thisEquipment.locked == 1) continue;
 			updateButtonColor(itemEquip, canAffordBuilding(itemEquip, null, null, true, true));
+			updateSRBuyAmt(what, itemEquip)
 		}
 		return;
 	}
@@ -6084,6 +6101,7 @@ function checkButtons(what) {
 			continue;
 		}
 		updateButtonColor(itemB, true);
+		updateSRBuyAmt(what, itemB);
 	}
 }
 
@@ -6127,8 +6145,9 @@ function updateButtonColor(what, canAfford, isJob) {
 	if(canAfford){
 		if
 			(what == "Gigastation" && (ctrlPressed || game.options.menu.ctrlGigas.enabled)) swapClass("thingColor", "thingColorCtrl", elem);
-		else
-		swapClass("thingColor", "thingColorCanAfford", elem);
+		else {
+			swapClass("thingColor", "thingColorCanAfford", elem);
+		}
 	}
 	else
 		swapClass("thingColor", "thingColorCanNotAfford", elem);
@@ -6187,7 +6206,7 @@ function drawEquipment(what) {
 				<span class="thingOwned">Level: <span id="${what}Owned">${equipment.level}</span></span>
 				<span class="efficientSR">, Most Efficient</span>
 				<span class="cantAffordSR">, Not Affordable</span>
-				<span class="affordSR">, Can Buy</span>
+				<span class="affordSR">, Can Buy <span id="${what}BuyAmount"></span></span>
 			</button>`;
 	}
 	return `<div 
