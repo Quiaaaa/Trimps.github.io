@@ -20579,10 +20579,3 @@ function keyTooltip(keyEvent, what, isItIn, event, textString, attachFunction, n
 		else tooltip(what, isItIn, "screenRead", ...Object.values(arguments).slice(3,))
 	}
 }
-
-
-screenReaderAssert(
-	`
-	Latest updates: 
-	Info Header with how to work all the tooltips, info buttons on demand.
-	`)
