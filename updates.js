@@ -5750,7 +5750,7 @@ function drawBuilding(what) {
 				<span id="${what}Alert" class="alert badge">${alertMessage}</span>${what}</span>, 
 				<span class="thingOwned" id="${what}Owned">${game.buildings[what].owned}</span>
 				<span class="cantAffordSR">, Not Affordable</span>
-				<span class="affordSR">, Can Buy <span id="${what}BuyAmount"></span></span>
+				<span class="affordSR">, <span id="${what}BuyAmount"></span>Affordable</span>
 			</button>`;
 	}
 
@@ -5817,7 +5817,7 @@ function drawJob(what) {
 				<span class="thingOwned" id="${what}Owned">0</span>
 				<span class="firingSR">, Firing</span>
 				<span class="cantAffordSR">, Not Affordable</span>
-				<span class="affordSR">, Can Buy <span id="${what}BuyAmount"></span></span>
+				<span class="affordSR">, <span id="${what}BuyAmount"></span>Affordable</span>
 			</button>`;
 	}
 	return `<div onmouseover="tooltip('${what}','jobs',event)" onmouseout="tooltip('hide')" class="thingColorCanNotAfford thing noselect pointer jobThing" id="${what}" onclick="buyJob('${what}')">
@@ -6011,7 +6011,7 @@ function drawUpgrade(what) {
 				<span class="thingName">${name}</span>, 
 				<span class="thingOwned" id="${what}Owned">${done}</span>
 				<span class="cantAffordSR">, Not Affordable</span>
-				<span class="affordSR">, Can Buy</span>
+				<span class="affordSR">, Affordable</span>
 			</button>`;
 	} else {
 		html = `<div onmouseover="tooltip('${what}','upgrades',event)" onmouseout="tooltip('hide')" class="thingColorCanNotAfford thing noselect pointer upgradeThing" id="${what}" onclick="buyUpgrade('${what}')">
@@ -6028,9 +6028,11 @@ function updateSRBuyAmt(what, item) {
 	if (usingScreenReader) {
 		let amtElem = document.getElementById(`${item}BuyAmount`);
 		if (amtElem) {
-			let amt = prettify((game.global.buyAmt == "Max") ? calculateMaxAfford(game[what][item], true) : game.global.buyAmt);
-			if (game[what][item].percent || what == "Antenna") amt = 1
-			if (amt != "1") amtElem.textContent = amt;
+			let amt = prettify(((game.global.buyAmt == "Max") ? calculateMaxAfford(game[what][item], what=="buildings", what=="equipment", what=="jobs") : game.global.buyAmt));
+			if (what == "jobs" && game.workspaces < amt) amt = prettify(game.workspaces);
+			if (game[what][item].percent || what == "Antenna") { amt = 1 }
+			if (amt == 1) amt = ""
+			amtElem.innerHTML = amt;
 		}
 	}
 }
@@ -6069,8 +6071,10 @@ function checkButtons(what) {
 			var canAfford = canAffordBuilding(itemBuild, false, false, false, true);
 /* 			if (itemBuild == "Nursery" && mutations.Magma.active())
 				canAfford = false;
- */			updateButtonColor(itemBuild, canAfford);
- 			updateSRBuyAmt(what, itemBuild)
+ */			
+			updateSRBuyAmt(what, itemBuild)
+			updateButtonColor(itemBuild, canAfford);
+ 			
 
 		}
 		return;
@@ -6206,7 +6210,7 @@ function drawEquipment(what) {
 				<span class="thingOwned">Level: <span id="${what}Owned">${equipment.level}</span></span>
 				<span class="efficientSR">, Most Efficient</span>
 				<span class="cantAffordSR">, Not Affordable</span>
-				<span class="affordSR">, Can Buy <span id="${what}BuyAmount"></span></span>
+				<span class="affordSR">, <span id="${what}BuyAmount"></span>Affordable</span>
 			</button>`;
 	}
 	return `<div 
